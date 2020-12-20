@@ -14,6 +14,7 @@ import 'package:overlay_support/src/overlay.dart';
 ///
 OverlaySupportEntry showOverlayNotification(
   WidgetBuilder builder, {
+  bool isEnabledAnimation = true,
   Duration duration,
   Key key,
   NotificationPosition position = NotificationPosition.top,
@@ -21,18 +22,24 @@ OverlaySupportEntry showOverlayNotification(
   if (duration == null) {
     duration = kNotificationDuration;
   }
-  return showOverlay((context, t) {
-    MainAxisAlignment alignment = MainAxisAlignment.start;
-    if (position == NotificationPosition.bottom) alignment = MainAxisAlignment.end;
-    return Column(
-      mainAxisAlignment: alignment,
-      children: <Widget>[
-        position == NotificationPosition.top
-            ? TopSlideNotification(builder: builder, progress: t)
-            : BottomSlideNotification(builder: builder, progress: t)
-      ],
-    );
-  }, duration: duration, key: key);
+  return showOverlay(
+    (context, t) {
+      MainAxisAlignment alignment = MainAxisAlignment.start;
+      if (position == NotificationPosition.bottom)
+        alignment = MainAxisAlignment.end;
+      return Column(
+        mainAxisAlignment: alignment,
+        children: <Widget>[
+          position == NotificationPosition.top
+              ? TopSlideNotification(builder: builder, progress: t)
+              : BottomSlideNotification(builder: builder, progress: t)
+        ],
+      );
+    },
+    duration: duration,
+    key: key,
+    isEnabledAnimation: isEnabledAnimation,
+  );
 }
 
 ///
@@ -79,8 +86,10 @@ OverlaySupportEntry showSimpleNotification(Widget content,
               bottom: position == NotificationPosition.bottom,
               top: position == NotificationPosition.top,
               child: ListTileTheme(
-                textColor: foreground ?? Theme.of(context)?.accentTextTheme?.title?.color,
-                iconColor: foreground ?? Theme.of(context)?.accentTextTheme?.title?.color,
+                textColor: foreground ??
+                    Theme.of(context)?.accentTextTheme?.title?.color,
+                iconColor: foreground ??
+                    Theme.of(context)?.accentTextTheme?.title?.color,
                 child: ListTile(
                   leading: leading,
                   title: content,
